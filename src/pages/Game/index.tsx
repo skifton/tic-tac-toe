@@ -7,7 +7,7 @@ import Button from "../../components/Button";
 const Game: React.FC = () => {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState<number>(0);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<string>("");
   const [winner, setWinner] = useState<string>("");
   const [xScore, setXScore] = useState<number>(0);
   const [oScore, setOScore] = useState<number>(0);
@@ -19,22 +19,34 @@ const Game: React.FC = () => {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
+
+    if (nextSquares?.every((square: any) => square !== null)) {
+      setHistory([Array(9).fill(null)]);
+      setCurrentMove(0);
+      setIsGameOver("DRAW");
+    }
+
     const winner = calculateWinner(nextSquares);
+
     if (winner) {
       setWinner(winner);
+
       if (winner === "X") {
         setXScore(xScore + 1);
       } else {
         setOScore(oScore + 1);
       }
-      setIsGameOver(true);
+
+      setIsGameOver("WIN");
+      setHistory([Array(9).fill(null)]);
+      setCurrentMove(0);
     }
   }
 
   const restartHandler = () => {
     setHistory([Array(9).fill(null)]);
     setCurrentMove(0);
-    setIsGameOver(false);
+    setIsGameOver("");
   };
 
   return (
@@ -57,9 +69,13 @@ const Game: React.FC = () => {
       </div>
 
       <GameOver
-        isEnd={isGameOver}
+        isEnd={Boolean(isGameOver)}
         restartHandler={restartHandler}
-        winner={winner}
+        title={
+          isGameOver === "DRAW"
+            ? "Draw, try again!"
+            : `Congratulations to the player ${winner}!`
+        }
       />
     </main>
   );
