@@ -1,4 +1,4 @@
 export const ROUTES = {
-  main: "/",
-  game: "/game",
+  main: "/tic-tac-toe/",
+  game: "/tic-tac-toe/game",
 };
